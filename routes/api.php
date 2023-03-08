@@ -1,6 +1,7 @@
 <?php
 
 use App\Auth\AuthController;
+use App\Http\Controllers\StarWarsApi\PeopleController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -18,8 +19,19 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:api')->get('/user', fn (Request $request) => $request->user());
 
 Route::controller(AuthController::class)
+    ->name('auth.')
     ->group(function () {
-        Route::post('/register', 'register')->name('auth.register');
+        Route::post('/register', 'register')->name('register');
 
-        Route::post('/login', 'login')->name('auth.login');
+        Route::post('/login', 'login')->name('login');
+    });
+
+Route::middleware('auth:api')
+    ->group(function () {
+        Route::controller(PeopleController::class)
+            ->name('people.')
+            ->prefix('people')
+            ->group(function() {
+                Route::get('/', 'index')->name('index');
+            });
     });
