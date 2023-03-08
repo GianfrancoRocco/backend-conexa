@@ -4,7 +4,7 @@ namespace App\Http\Controllers\StarWarsApi;
 
 use App\Enums\StarWarsApiResource;
 
-class PeopleController extends Controller
+class PersonController extends Controller
 {
     protected StarWarsApiResource $resource = StarWarsApiResource::PERSON;
 }

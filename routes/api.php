@@ -1,7 +1,7 @@
 <?php
 
 use App\Auth\AuthController;
-use App\Http\Controllers\StarWarsApi\PeopleController;
+use App\Http\Controllers\StarWarsApi\PersonController;
 use App\Http\Controllers\StarWarsApi\PlanetController;
 use App\Http\Controllers\StarWarsApi\VehicleController;
 use Illuminate\Http\Request;
@@ -30,8 +30,8 @@ Route::controller(AuthController::class)
 
 Route::middleware('auth:api')
     ->group(function () {
-        Route::controller(PeopleController::class)
-            ->name('people.')
+        Route::controller(PersonController::class)
+            ->name('person.')
             ->prefix('people')
             ->group(function() {
                 Route::get('/', 'index')->name('index');
