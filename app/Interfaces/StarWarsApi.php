@@ -4,6 +4,7 @@ namespace App\Interfaces;
 
 use App\DTOs\PersonDTO;
 use App\DTOs\PlanetDTO;
+use App\DTOs\VehicleDTO;
 use Illuminate\Support\Collection;
 
 interface StarWarsApi
@@ -17,4 +18,6 @@ interface StarWarsApi
     public function planet(int $id): PlanetDTO;
 
     public function vehicles(int $page = 1): Collection;
+
+    public function vehicle(int $id): VehicleDTO;
 }

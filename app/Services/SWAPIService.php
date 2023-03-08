@@ -5,6 +5,7 @@ namespace App\Services;
 use App\DTOs\PersonDTO;
 use App\DTOs\PlanetDTO;
 use App\DTOs\VehicleDTO;
+use App\Exceptions\StarWarsApiException;
 use App\Interfaces\StarWarsApi;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
@@ -64,5 +65,16 @@ class SWAPIService implements StarWarsApi
         $vehicles = $response['results'];
 
         return Collection::make(Arr::map($vehicles, fn (array $vehicle) => new VehicleDTO(...$vehicle)));
+    }
+
+    public function vehicle(int $id): VehicleDTO
+    {
+        $response = Http::get("{$this->api}/vehicles/{$id}")->json();
+
+        if (!empty($response['detail'])) {
+            throw new StarWarsApiException($response['detail']);
+        }
+
+        return new VehicleDTO(...$response);
     }
 }
