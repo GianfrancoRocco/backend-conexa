@@ -20,4 +20,9 @@ class PeopleController extends Controller
             'data' => $people
         ]);
     }
+
+    public function show(int $id): JsonResponse
+    {
+        return response()->json($this->starWarsApi->person($id));
+    }
 }
