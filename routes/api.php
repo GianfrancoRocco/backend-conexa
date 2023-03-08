@@ -19,5 +19,7 @@ Route::middleware('auth:api')->get('/user', fn (Request $request) => $request->u
 
 Route::controller(AuthController::class)
     ->group(function () {
+        Route::post('/register', 'register')->name('auth.register');
+
         Route::post('/login', 'login')->name('auth.login');
     });
