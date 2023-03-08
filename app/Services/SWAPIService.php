@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\DTOs\PersonDTO;
 use App\DTOs\PlanetDTO;
+use App\DTOs\VehicleDTO;
 use App\Interfaces\StarWarsApi;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
@@ -52,5 +53,16 @@ class SWAPIService implements StarWarsApi
         $response = Http::get("{$this->api}/planets/{$id}")->json();
 
         return new PlanetDTO(...$response);
+    }
+
+    public function vehicles(int $page = 1): Collection
+    {
+        $response = Http::get("{$this->api}/vehicles", [
+            'page' => $page
+        ])->json();
+
+        $vehicles = $response['results'];
+
+        return Collection::make(Arr::map($vehicles, fn (array $vehicle) => new VehicleDTO(...$vehicle)));
     }
 }

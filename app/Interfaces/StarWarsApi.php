@@ -15,4 +15,6 @@ interface StarWarsApi
     public function planets(int $page = 1): Collection;
 
     public function planet(int $id): PlanetDTO;
+
+    public function vehicles(int $page = 1): Collection;
 }
