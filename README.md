@@ -104,3 +104,9 @@ For more info refer to <https://laravel.com/docs/9.x/sail>
 You can use the following credentials to log in as the default user, or you can create a user of your own using the `register` API:
 - Email: gianfrancorocco@example.com
 - Password: password
+
+### API Collection
+
+Click the following button to access the API collection:
+
+[![Run in Postman](https://run.pstmn.io/button.svg)](https://god.gw.postman.com/run-collection/15066677-4b624528-c476-49ac-a942-692c2847981b?action=collection%2Ffork&collection-url=entityId%3D15066677-4b624528-c476-49ac-a942-692c2847981b%26entityType%3Dcollection%26workspaceId%3Dba6c45ac-413f-4bbc-8e02-bd0cf9db2a8d)
