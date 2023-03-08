@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
+use Illuminate\Support\Str;
 
 class AuthControllerTest extends TestCase
 {
@@ -76,7 +77,7 @@ class AuthControllerTest extends TestCase
         ]);
     }
 
-    public function validLoginData(): array
+    public static function validLoginData(): array
     {
         return [
             ['#1' => [
@@ -94,18 +95,18 @@ class AuthControllerTest extends TestCase
         ];
     }
 
-    public function invalidRegisterData(): array
+    public static function invalidRegisterData(): array
     {
         return [
             ['no name' => [
                 'name' => null,
                 'email' => fake()->unique()->email(),
-                'password' => fake()->password()
+                'password' => Str::ucfirst(fake()->password())
             ]],
             ['invalid email' => [
                 'name' => fake()->name(),
-                'email' => 'whatsthis@com',
-                'password' => fake()->password()
+                'email' => 'rasdasdasd',
+                'password' => Str::ucfirst(fake()->password())
             ]],
             ['invalid password' => [
                 'name' => fake()->name(),
@@ -120,23 +121,23 @@ class AuthControllerTest extends TestCase
         ];
     }
 
-    public function validRegisterData(): array
+    public static function validRegisterData(): array
     {
         return [
             ['#1' => [
                 'name' => fake()->name(),
                 'email' => fake()->email(),
-                'password' => fake()->password()
+                'password' => Str::ucfirst(fake()->password())
             ]],
             ['#2' => [
                 'name' => fake()->name(),
                 'email' => fake()->email(),
-                'password' => fake()->password()
+                'password' => Str::ucfirst(fake()->password())
             ]],
             ['#3' => [
                 'name' => fake()->name(),
                 'email' => fake()->email(),
-                'password' => fake()->password()
+                'password' => Str::ucfirst(fake()->password())
             ]],
         ];
     }
