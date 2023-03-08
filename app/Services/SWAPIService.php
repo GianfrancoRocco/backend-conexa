@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\DTOs\PersonDTO;
+use App\DTOs\PlanetDTO;
 use App\Interfaces\StarWarsApi;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
@@ -33,5 +34,16 @@ class SWAPIService implements StarWarsApi
         $response = Http::get("{$this->api}/people/{$id}")->json();
 
         return new PersonDTO(...$response);
+    }
+
+    public function planets(int $page = 1): Collection
+    {
+        $response = Http::get("{$this->api}/planets", [
+            'page' => $page
+        ])->json();
+
+        $planets = $response['results'];
+
+        return Collection::make(Arr::map($planets, fn (array $planet) => new PlanetDTO(...$planet)));
     }
 }

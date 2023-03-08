@@ -2,6 +2,7 @@
 
 use App\Auth\AuthController;
 use App\Http\Controllers\StarWarsApi\PeopleController;
+use App\Http\Controllers\StarWarsApi\PlanetController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -35,5 +36,12 @@ Route::middleware('auth:api')
                 Route::get('/', 'index')->name('index');
 
                 Route::get('/{id}', 'show')->name('show');
+            });
+
+        Route::controller(PlanetController::class)
+            ->name('planet.')
+            ->prefix('planets')
+            ->group(function() {
+                Route::get('/', 'index')->name('index');
             });
     });
