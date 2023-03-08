@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Interfaces\StarWarsApi;
 use App\Services\SWAPIService;
+use App\Services\SWAPIServiceMock;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\ServiceProvider;

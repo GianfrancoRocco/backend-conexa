@@ -3,12 +3,20 @@
 namespace Tests\Feature\StarWarsApi;
 
 use App\Models\User;
+use App\Services\SWAPIServiceMock;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class PlanetControllerTest extends TestCase
 {
     use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->instance(StarWarsApi::class, new SWAPIServiceMock);
+    }
 
     public function test_a_collection_of_planets_can_be_fetched(): void
     {
@@ -49,7 +57,7 @@ class PlanetControllerTest extends TestCase
     {
         $this->actingAs(User::factory()->create());
 
-        $response = $this->getJson(route('planet.show', [232323321]));
+        $response = $this->getJson(route('planet.show', [2]));
 
         $response->assertNotFound();
     }

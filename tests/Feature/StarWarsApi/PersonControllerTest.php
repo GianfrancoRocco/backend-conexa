@@ -2,13 +2,22 @@
 
 namespace Tests\Feature\StarWarsApi;
 
+use App\Interfaces\StarWarsApi;
 use App\Models\User;
+use App\Services\SWAPIServiceMock;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class PersonControllerTest extends TestCase
 {
     use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->instance(StarWarsApi::class, new SWAPIServiceMock);
+    }
 
     public function test_a_collection_of_people_can_be_fetched(): void
     {
@@ -49,7 +58,7 @@ class PersonControllerTest extends TestCase
     {
         $this->actingAs(User::factory()->create());
 
-        $response = $this->getJson(route('person.show', [232323321]));
+        $response = $this->getJson(route('person.show', [2]));
 
         $response->assertNotFound();
     }
