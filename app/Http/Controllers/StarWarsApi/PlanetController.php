@@ -20,4 +20,9 @@ class PlanetController extends Controller
             'data' => $planets
         ]);
     }
+
+    public function show(int $id): JsonResponse
+    {
+        return response()->json($this->starWarsApi->planet($id));
+    }
 }

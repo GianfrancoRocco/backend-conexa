@@ -43,5 +43,7 @@ Route::middleware('auth:api')
             ->prefix('planets')
             ->group(function() {
                 Route::get('/', 'index')->name('index');
+
+                Route::get('/{id}', 'show')->name('show');
             });
     });

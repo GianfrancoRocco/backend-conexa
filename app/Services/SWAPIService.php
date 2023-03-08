@@ -46,4 +46,11 @@ class SWAPIService implements StarWarsApi
 
         return Collection::make(Arr::map($planets, fn (array $planet) => new PlanetDTO(...$planet)));
     }
+
+    public function planet(int $id): PlanetDTO
+    {
+        $response = Http::get("{$this->api}/planets/{$id}")->json();
+
+        return new PlanetDTO(...$response);
+    }
 }
