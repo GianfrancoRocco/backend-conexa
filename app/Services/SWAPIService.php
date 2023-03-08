@@ -7,6 +7,8 @@ use App\DTOs\PlanetDTO;
 use App\DTOs\VehicleDTO;
 use App\Exceptions\StarWarsApiException;
 use App\Interfaces\StarWarsApi;
+use Illuminate\Http\Client\Response as ClientResponse;
+use Illuminate\Http\Response;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
@@ -22,9 +24,9 @@ class SWAPIService implements StarWarsApi
 
     public function people(int $page = 1): Collection
     {
-        $response = Http::get("{$this->api}/people", [
+        $response = $this->processResponse(Http::get("{$this->api}/people", [
             'page' => $page
-        ])->json();
+        ]));
 
         $people = $response['results'];
 
@@ -33,16 +35,16 @@ class SWAPIService implements StarWarsApi
 
     public function person(int $id): PersonDTO
     {
-        $response = Http::get("{$this->api}/people/{$id}")->json();
+        $response = $this->processResponse(Http::get("{$this->api}/people/{$id}"));
 
         return new PersonDTO(...$response);
     }
 
     public function planets(int $page = 1): Collection
     {
-        $response = Http::get("{$this->api}/planets", [
+        $response = $this->processResponse(Http::get("{$this->api}/planets", [
             'page' => $page
-        ])->json();
+        ]));
 
         $planets = $response['results'];
 
@@ -51,16 +53,16 @@ class SWAPIService implements StarWarsApi
 
     public function planet(int $id): PlanetDTO
     {
-        $response = Http::get("{$this->api}/planets/{$id}")->json();
+        $response = $this->processResponse(Http::get("{$this->api}/planets/{$id}"));
 
         return new PlanetDTO(...$response);
     }
 
     public function vehicles(int $page = 1): Collection
     {
-        $response = Http::get("{$this->api}/vehicles", [
+        $response = $this->processResponse(Http::get("{$this->api}/vehicles", [
             'page' => $page
-        ])->json();
+        ]));
 
         $vehicles = $response['results'];
 
@@ -69,12 +71,21 @@ class SWAPIService implements StarWarsApi
 
     public function vehicle(int $id): VehicleDTO
     {
-        $response = Http::get("{$this->api}/vehicles/{$id}")->json();
-
-        if (!empty($response['detail'])) {
-            throw new StarWarsApiException($response['detail']);
-        }
+        $response = $this->processResponse(Http::get("{$this->api}/vehicles/{$id}"));
 
         return new VehicleDTO(...$response);
+    }
+
+    private function processResponse(ClientResponse $response): array
+    {
+        $status = $response->status();
+
+        $response = $response->json();
+
+        if ($status !== Response::HTTP_OK) {
+            throw new StarWarsApiException($response['detail'] ?? 'An unknown error ocurred', $status);
+        }
+
+        return $response;
     }
 }
