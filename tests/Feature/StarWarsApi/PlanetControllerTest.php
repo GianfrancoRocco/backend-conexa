@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\StarWarsApi;
 
+use App\Interfaces\StarWarsApi;
 use App\Models\User;
 use App\Services\SWAPIServiceMock;
 use Illuminate\Foundation\Testing\RefreshDatabase;
