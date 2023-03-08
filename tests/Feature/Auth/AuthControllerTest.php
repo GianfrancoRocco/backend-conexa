@@ -101,12 +101,12 @@ class AuthControllerTest extends TestCase
             ['no name' => [
                 'name' => null,
                 'email' => fake()->unique()->email(),
-                'password' => Str::ucfirst(fake()->password())
+                'password' => 'Acoolpassword'
             ]],
             ['invalid email' => [
                 'name' => fake()->name(),
                 'email' => 'rasdasdasd',
-                'password' => Str::ucfirst(fake()->password())
+                'password' => 'Acoolpassword'
             ]],
             ['invalid password' => [
                 'name' => fake()->name(),
@@ -127,17 +127,17 @@ class AuthControllerTest extends TestCase
             ['#1' => [
                 'name' => fake()->name(),
                 'email' => fake()->email(),
-                'password' => Str::ucfirst(fake()->password())
+                'password' => 'Acoolpassword'
             ]],
             ['#2' => [
                 'name' => fake()->name(),
                 'email' => fake()->email(),
-                'password' => Str::ucfirst(fake()->password())
+                'password' => 'Acoolpassword'
             ]],
             ['#3' => [
                 'name' => fake()->name(),
                 'email' => fake()->email(),
-                'password' => Str::ucfirst(fake()->password())
+                'password' => 'Acoolpassword'
             ]],
         ];
     }
