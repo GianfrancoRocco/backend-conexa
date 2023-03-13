@@ -30,6 +30,8 @@ jobs:
       run: |
         mkdir -p database
         touch database/database.sqlite
+    - name: Run PHPStan
+      run: vendor/bin/phpstan analyse --memory-limit=1G
     - name: Execute tests (Unit and Feature tests) via PHPUnit
       env:
         DB_CONNECTION: sqlite

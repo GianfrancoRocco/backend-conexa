@@ -6,7 +6,7 @@ use App\DTOs\PersonDTO;
 use App\DTOs\PlanetDTO;
 use App\DTOs\VehicleDTO;
 use App\Exceptions\StarWarsApiException;
-use App\Interfaces\StarWarsApi;
+use App\Interfaces\StarWarsApi\Api as StarWarsApi;
 use Illuminate\Http\Client\Response as ClientResponse;
 use Illuminate\Http\Response;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -20,36 +20,76 @@ class SWAPIService implements StarWarsApi
 
     public function __construct()
     {
-        $this->api = config('star-wars-api.url');
+        /** @var string $url */
+        $url = config('star-wars-api.url');
+
+        $this->api = $url;
     }
 
-    private function paginateResponse(array $response, int $page, string $dtoClass): LengthAwarePaginator
+    /**
+     * Handle response by checking its HTTP status code and
+     * reacting accordingly.
+     *
+     * @param ClientResponse $response
+     * @return array<string, mixed>
+     */
+    protected function handleResponse(ClientResponse $response): array
     {
-        return Collection::make(
-                Arr::map($response['results'], fn (array $resource) => new $dtoClass(...$resource))
-            )
-            ->paginate($response['count'], page: $page);
+        $status = $response->status();
+
+        /** @var array<string, mixed> $arrayResponse */
+        $arrayResponse = $response->json();
+
+        if ($status !== Response::HTTP_OK) {
+            /** @var string $message */
+            $message = $arrayResponse['detail'] ?? 'An unknown error ocurred';
+
+            throw new StarWarsApiException($message, $status);
+        }
+
+        return $arrayResponse;
+    }
+
+    /**
+     * Paginate a response's results.
+     *
+     * @param array<string, mixed> $response
+     * @param integer $page
+     * @param string $dtoClass
+     * @return LengthAwarePaginator<\App\Interfaces\StarWarsApi\DTO>
+     */
+    protected function paginateResponse(array $response, int $page, string $dtoClass): LengthAwarePaginator
+    {
+        /** @var array<string, mixed> $results */
+        $results = $response['results'];
+
+        /** @var integer $total */
+        $total = $response['count'];
+
+        return Collection::make(Arr::map($results, fn (array $resource) => $dtoClass::from($resource)))
+            ->paginate($total, page: $page);
     }
 
     public function people(int $page = 1): LengthAwarePaginator
     {
-        $response = $this->processResponse(Http::get("{$this->api}/people", [
+        $response = $this->handleResponse(Http::get("{$this->api}/people", [
             'page' => $page
         ]));
 
         return $this->paginateResponse($response, $page, PersonDTO::class);
     }
 
+
     public function person(int $id): PersonDTO
     {
-        $response = $this->processResponse(Http::get("{$this->api}/people/{$id}"));
+        $response = $this->handleResponse(Http::get("{$this->api}/people/{$id}"));
 
-        return new PersonDTO(...$response);
+        return PersonDTO::from($response);
     }
 
     public function planets(int $page = 1): LengthAwarePaginator
     {
-        $response = $this->processResponse(Http::get("{$this->api}/planets", [
+        $response = $this->handleResponse(Http::get("{$this->api}/planets", [
             'page' => $page
         ]));
 
@@ -58,14 +98,14 @@ class SWAPIService implements StarWarsApi
 
     public function planet(int $id): PlanetDTO
     {
-        $response = $this->processResponse(Http::get("{$this->api}/planets/{$id}"));
+        $response = $this->handleResponse(Http::get("{$this->api}/planets/{$id}"));
 
-        return new PlanetDTO(...$response);
+        return PlanetDTO::from($response);
     }
 
     public function vehicles(int $page = 1): LengthAwarePaginator
     {
-        $response = $this->processResponse(Http::get("{$this->api}/vehicles", [
+        $response = $this->handleResponse(Http::get("{$this->api}/vehicles", [
             'page' => $page
         ]));
 
@@ -74,21 +114,8 @@ class SWAPIService implements StarWarsApi
 
     public function vehicle(int $id): VehicleDTO
     {
-        $response = $this->processResponse(Http::get("{$this->api}/vehicles/{$id}"));
+        $response = $this->handleResponse(Http::get("{$this->api}/vehicles/{$id}"));
 
-        return new VehicleDTO(...$response);
-    }
-
-    private function processResponse(ClientResponse $response): array
-    {
-        $status = $response->status();
-
-        $response = $response->json();
-
-        if ($status !== Response::HTTP_OK) {
-            throw new StarWarsApiException($response['detail'] ?? 'An unknown error ocurred', $status);
-        }
-
-        return $response;
+        return VehicleDTO::from($response);
     }
 }

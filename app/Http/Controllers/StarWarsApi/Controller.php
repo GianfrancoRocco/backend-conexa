@@ -5,7 +5,7 @@ namespace App\Http\Controllers\StarWarsApi;
 use App\Enums\StarWarsApiResource;
 use App\Exceptions\StarWarsApiException;
 use App\Http\Controllers\Controller as BaseController;
-use App\Interfaces\StarWarsApi;
+use App\Interfaces\StarWarsApi\Api as StarWarsApi;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -20,6 +20,12 @@ class Controller extends BaseController
     public function __construct(protected StarWarsApi $starWarsApi)
     {}
 
+    /**
+     * Get a collection of the specified resource.
+     *
+     * @param Request $request
+     * @return JsonResponse|LengthAwarePaginator<\App\Interfaces\StarWarsApi\DTO>
+     */
     public function index(Request $request): JsonResponse|LengthAwarePaginator
     {
         return $this->handleApiCall(fn () => 
@@ -27,6 +33,12 @@ class Controller extends BaseController
         );
     }
 
+    /**
+     * Get single resource by its ID.
+     *
+     * @param integer $id
+     * @return JsonResponse
+     */
     public function show(int $id): JsonResponse
     {
         return $this->handleApiCall(fn () => 
@@ -34,7 +46,11 @@ class Controller extends BaseController
         );
     }
 
-    private function handleApiCall(callable $callback): JsonResponse|LengthAwarePaginator
+    /**
+     * @param callable $callback
+     * @return JsonResponse
+     */
+    private function handleApiCall(callable $callback): JsonResponse
     {
         $message = 'An unknown error has ocurred';
         $status = Response::HTTP_INTERNAL_SERVER_ERROR;

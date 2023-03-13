@@ -14,11 +14,17 @@ class AuthController extends Controller
 {
     public function register(RegisterRequest $request): JsonResponse
     {
-        $user = User::create($request->validated());
+        /** @var array<string, mixed> */
+        $data = $request->validated();
+
+        User::create($data);
+
+        /** @var string */
+        $token = Auth::attempt($request->only('email', 'password'));
 
         return response()->json([
             'auth' => [
-                'token' => Auth::login($user),
+                'token' => $token,
                 'type' => 'bearer'
             ]
         ], Response::HTTP_CREATED);
@@ -26,7 +32,10 @@ class AuthController extends Controller
 
     public function login(LoginRequest $request): JsonResponse
     {
-        $token = Auth::attempt($request->validated());
+        /** @var array<string, mixed> */
+        $data = $request->validated();
+
+        $token = Auth::attempt($data);
 
         if (!$token) {
             return response()->json([
