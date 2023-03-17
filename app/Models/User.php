@@ -42,6 +42,9 @@ class User extends Authenticatable implements JWTSubject
         'email_verified_at' => 'datetime',
     ];
 
+    /**
+     * @return Attribute<null, string>
+     */
     protected function password(): Attribute
     {
         return Attribute::make(
@@ -54,6 +57,9 @@ class User extends Authenticatable implements JWTSubject
         return $this->getKey();
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getJWTCustomClaims(): array
     {
         return [];

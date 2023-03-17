@@ -13,7 +13,7 @@ class RegisterRequest extends FormRequest
     }
 
     /**
-     * @return array<string, \Illuminate\Contracts\Validation\Rule|array|string>
+     * @return array<string, mixed>
      */
     public function rules(): array
     {

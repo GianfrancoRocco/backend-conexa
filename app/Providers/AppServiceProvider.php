@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\Interfaces\StarWarsApi;
+use App\Interfaces\StarWarsApi\Api as StarWarsApi;
 use App\Services\SWAPIService;
 use App\Services\SWAPIServiceMock;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -11,8 +11,9 @@ use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
+    /** @var array<string, string> $bindings */
     public array $bindings = [
-        StarWarsApi::class => SWAPIService::class
+        //
     ];
 
     /**
@@ -20,7 +21,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->bind(
+            StarWarsApi::class,
+            app()->environment('testing') ? SWAPIServiceMock::class : SWAPIService::class
+        );
     }
 
     /**
@@ -29,8 +33,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Collection::macro('paginate', function (int $total, int $perPage = 10, int $page = 1) {
-            /** @var Collection $this */
-            $this;
+            /** @var Collection<string, mixed> $this */
 
             $page = $page ?: LengthAwarePaginator::resolveCurrentPage('page');
 
